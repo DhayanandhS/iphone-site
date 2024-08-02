@@ -7,13 +7,12 @@ import { useEffect, useRef, useState } from "react";
 import { hightlightsSlides } from "../constants";
 import { pauseImg, playImg, replayImg } from "../utils";
 
-
 const VideoCarousel = () => {
-
   const videoRef = useRef([]);
   const videoSpanRef = useRef([]);
   const videoDivRef = useRef([]);
 
+  // video and indicator
   const [video, setVideo] = useState({
     isEnd: false,
     startPlay: false,
@@ -24,8 +23,6 @@ const VideoCarousel = () => {
 
   const [loadedData, setLoadedData] = useState([]);
   const { isEnd, isLastVideo, startPlay, videoId, isPlaying } = video;
-
-
 
   useGSAP(() => {
     // slider animation to move the video out of the screen and bring the next video in
@@ -56,8 +53,8 @@ const VideoCarousel = () => {
     let span = videoSpanRef.current;
 
     if (span[videoId]) {
-      // animation to move the indicator also video progress
-      let anim = gsap.to(span[videoId], { // when adding animation it can also be the change like onUpdate below
+      // animation to move the indicator
+      let anim = gsap.to(span[videoId], {
         onUpdate: () => {
           // get the progress of the video
           const progress = Math.ceil(anim.progress() * 100);
@@ -116,7 +113,7 @@ const VideoCarousel = () => {
         gsap.ticker.remove(animUpdate);
       }
     }
-  }, [videoId, startPlay])
+  }, [videoId, startPlay]);
 
   useEffect(() => {
     if (loadedData.length > 3) {
@@ -128,6 +125,7 @@ const VideoCarousel = () => {
     }
   }, [startPlay, videoId, isPlaying, loadedData]);
 
+  // vd id is the id for every video until id becomes number 3
   const handleProcess = (type, i) => {
     switch (type) {
       case "video-end":
@@ -142,11 +140,11 @@ const VideoCarousel = () => {
         setVideo((pre) => ({ ...pre, videoId: 0, isLastVideo: false }));
         break;
 
-      case "play":
+      case "pause":
         setVideo((pre) => ({ ...pre, isPlaying: !pre.isPlaying }));
         break;
 
-      case "pause":
+      case "play":
         setVideo((pre) => ({ ...pre, isPlaying: !pre.isPlaying }));
         break;
 
@@ -155,17 +153,16 @@ const VideoCarousel = () => {
     }
   };
 
-
   const handleLoadedMetaData = (i, e) => setLoadedData((pre) => [...pre, e]);
 
   return (
     <>
-     <div className="flex items-center">
-         {hightlightsSlides.map((list, i) => (
-            <div key={list.id} id="slider" className="sm:pr-20 pr-10">
-                <div className="video-carousel_container">
-                    <div className="w-full h-full flex-center rounded-3xl overflow-hidden bg-black">
-                    <video
+      <div className="flex items-center">
+        {hightlightsSlides.map((list, i) => (
+          <div key={list.id} id="slider" className="sm:pr-20 pr-10">
+            <div className="video-carousel_container">
+              <div className="w-full h-full flex-center rounded-3xl overflow-hidden bg-black">
+                <video
                   id="video"
                   playsInline={true}
                   className={`${
@@ -184,21 +181,23 @@ const VideoCarousel = () => {
                   }
                   onLoadedMetadata={(e) => handleLoadedMetaData(i, e)}
                 >
-                            <source src={list.video} type="video/mp4" />
-                        </video>
-                    </div>
-                    <div className="absolute top-12 left-[5%] z-10">
-                        {list.textLists.map((text, i) => (
-                            <p key={i} className="md:text-2xl text-xl font-medium">
-                                {text}
-                            </p>
-                        ))}
-                    </div>
-                </div>
+                  <source src={list.video} type="video/mp4" />
+                </video>
+              </div>
+
+              <div className="absolute top-12 left-[5%] z-10">
+                {list.textLists.map((text, i) => (
+                  <p key={i} className="md:text-2xl text-xl font-medium">
+                    {text}
+                  </p>
+                ))}
+              </div>
             </div>
-         ))}
-     </div> 
-     <div className="relative flex-center mt-10">
+          </div>
+        ))}
+      </div>
+
+      <div className="relative flex-center mt-10">
         <div className="flex-center py-5 px-7 bg-gray-300 backdrop-blur rounded-full">
           {videoRef.current.map((_, i) => (
             <span
@@ -229,7 +228,7 @@ const VideoCarousel = () => {
         </button>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default VideoCarousel
+export default VideoCarousel;
