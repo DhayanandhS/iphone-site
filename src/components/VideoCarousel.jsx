@@ -97,7 +97,7 @@ const VideoCarousel = () => {
         anim.restart();
       }
 
-      // update the progress bar
+      // update the progress bar \ how long we need the progess
       const animUpdate = () => {
         anim.progress(
           videoRef.current[videoId].currentTime /
